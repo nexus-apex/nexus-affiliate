@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | NexusAffiliate{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Affpartners</div>
+    <div class="stat-value">{{ affpartner_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Referrals</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#10b981,#06b6d4);-webkit-background-clip:text;background-clip:text">{{ referral_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Commissions</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#f59e0b,#f97316);-webkit-background-clip:text;background-clip:text">{{ commission_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Commission Rate</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#ef4444,#ec4899);-webkit-background-clip:text;background-clip:text">{{ affpartner_total_commission_rate|floatformat:0 }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <h3>Recent Affpartners</h3>
+    <a href="/affpartners/create/" class="btn btn-primary btn-sm">+ New AffPartner</a>
+  </div>
+  {% if recent %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>Website</th><th>Commission Rate</th><th>Total Earned</th><th>Created</th></tr>
+    </thead>
+    <tbody>
+      {% for r in recent %}
+      <tr>
+        <td><a href="/affpartners/{{ r.pk }}/edit/">{{ r.name }}</a></td>
+        <td>{{ r.email|default:"-" }}</td><td>{{ r.website|default:"-" }}</td><td>{{ r.commission_rate|floatformat:2 }}</td><td>{{ r.total_earned|floatformat:2 }}</td><td style="color:var(--muted)">{{ r.created_at|date:"M d, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No records yet.</p>
+    <a href="/affpartners/create/" class="btn btn-primary" style="margin-top:1rem">Create First AffPartner</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
