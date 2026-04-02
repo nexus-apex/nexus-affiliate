@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Referrals | NexusAffiliate{% endblock %}
+{% block page_title %}Referrals{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search referrals...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Status</option>
+      <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+      <option value="converted" {% if status_filter == 'converted' %}selected{% endif %}>Converted</option>
+      <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/referrals/create/" class="btn btn-primary">+ New Referral</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Partner Name</th><th>Referred Email</th><th>Product</th><th>Status</th><th>Click Date</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/referrals/{{ r.pk }}/edit/"><strong>{{ r.partner_name }}</strong></a></td>
+        <td style="color:var(--muted)">{{ r.referred_email|default:"-" }}</td>
+        <td>{{ r.product|default:"-" }}</td>
+        <td><span class="badge badge-blue">{{ r.get_status_display }}</span></td>
+        <td style="color:var(--muted)">{{ r.click_date|date:"M d, Y"|default:"-" }}</td>
+        <td class="actions">
+          <a href="/referrals/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/referrals/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No referrals found.</p>
+    <a href="/referrals/create/" class="btn btn-primary" style="margin-top:1rem">Create Referral</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
