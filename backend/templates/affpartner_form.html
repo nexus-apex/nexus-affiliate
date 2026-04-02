@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} AffPartner | NexusAffiliate{% endblock %}
+{% block page_title %}{% if editing %}Edit AffPartner{% else %}New AffPartner{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ record.name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ record.email|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Website</label>
+        <input type="url" name="website" value="{{ record.website|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Commission Rate</label>
+        <input type="number" step="0.01" name="commission_rate" value="{{ record.commission_rate|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Total Earned</label>
+        <input type="number" step="0.01" name="total_earned" value="{{ record.total_earned|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Total Referrals</label>
+        <input type="number" name="total_referrals" value="{{ record.total_referrals|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="active" {% if record.status == 'active' %}selected{% endif %}>Active</option>
+          <option value="pending" {% if record.status == 'pending' %}selected{% endif %}>Pending</option>
+          <option value="suspended" {% if record.status == 'suspended' %}selected{% endif %}>Suspended</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Joined Date</label>
+        <input type="date" name="joined_date" value="{{ record.joined_date|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Payment Method</label>
+        <select name="payment_method">
+          <option value="bank" {% if record.payment_method == 'bank' %}selected{% endif %}>Bank</option>
+          <option value="paypal" {% if record.payment_method == 'paypal' %}selected{% endif %}>PayPal</option>
+          <option value="upi" {% if record.payment_method == 'upi' %}selected{% endif %}>UPI</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} AffPartner</button>
+      <a href="/affpartners/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
