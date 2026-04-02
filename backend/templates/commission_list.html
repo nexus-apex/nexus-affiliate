@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Commissions | NexusAffiliate{% endblock %}
+{% block page_title %}Commissions{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search commissions...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Status</option>
+      <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+      <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+      <option value="paid" {% if status_filter == 'paid' %}selected{% endif %}>Paid</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/commissions/create/" class="btn btn-primary">+ New Commission</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Partner Name</th><th>Amount</th><th>Referral Count</th><th>Period</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/commissions/{{ r.pk }}/edit/"><strong>{{ r.partner_name }}</strong></a></td>
+        <td>{{ r.amount|floatformat:2 }}</td>
+        <td>{{ r.referral_count|default:"-" }}</td>
+        <td>{{ r.period|default:"-" }}</td>
+        <td><span class="badge badge-blue">{{ r.get_status_display }}</span></td>
+        <td class="actions">
+          <a href="/commissions/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/commissions/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No commissions found.</p>
+    <a href="/commissions/create/" class="btn btn-primary" style="margin-top:1rem">Create Commission</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
